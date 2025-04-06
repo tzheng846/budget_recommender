@@ -2,6 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import { auth } from 'express-oauth2-jwt-bearer';
+import path from 'path'; // New Addition
+import { fileURLToPath } from 'url'; // New Addition
+
 
 const app = express();
 const PORT = 3001;
@@ -17,11 +20,24 @@ const jwtCheck = auth({
 app.use(cors());
 app.use(express.json());
 
+// Set __dirname for ES modules (New Additions)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Serve static files from the browser folder (sibling of server)
+app.use(express.static(path.join(__dirname, '../browser')));
+
+
 // MongoDB connection options
 const mongooseOptions = {
   serverSelectionTimeoutMS: 5000, // Timeout after 5s
   socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
 };
+
+// Protected route for profile page (// New Additions)
+app.get('/profile', jwtCheck, (req, res) => {
+  res.sendFile(path.join(__dirname, '../browser', 'profile.html'));
+});
 
 // Connect to MongoDB
 mongoose.connect('mongodb+srv://tzheng846:p8a4q9UA6aIGQcBm@budget-calculator.lrbzwby.mongodb.net/?retryWrites=true&w=majority&appName=budget-calculator', mongooseOptions)

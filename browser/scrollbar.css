@@ -1,0 +1,23 @@
+/* Applies to the whole document */
+::-webkit-scrollbar {
+    width: 10px; /* Width of the vertical scrollbar */
+    height: 10px; /* Height of the horizontal scrollbar */
+  }
+  
+  /* Track (background of the scrollbar) */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Light grey background */
+    border-radius: 10px;
+  }
+  
+  /* Scrollbar thumb (the draggable element) */
+  ::-webkit-scrollbar-thumb {
+    background: #888; /* Grey color for the thumb */
+    border-radius: 10px;
+  }
+  
+  /* Thumb hover effect */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Darker grey when hovering */
+  }
+  

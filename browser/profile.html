@@ -8,7 +8,11 @@
     href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
     rel="stylesheet"
   />
+
   <link rel="stylesheet" href="sign_in.css" />
+
+  <!-- <link rel="stylesheet" href="scrollbar.css" /> -->
+
   <title>Profile - ShopSense</title>
   <style>
     /* Additional styles for the Profile page */
@@ -180,6 +184,16 @@
     </div>
   </div>
 
+<!-- Add this inside the <body> tag, below the existing content -->
+    <div style="height: 200px; overflow: auto;">
+        <div class="overflow-content">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+          <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+          <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+          <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        </div>
+      </div>
+
   <!-- Password Modal -->
   <div id="passwordModal" class="modal">
     <div class="modal-content">
@@ -201,6 +215,8 @@
         i.className = "nav-menu";
       }
     }
+
+    
 
     // Modal functions
     function openModal(modalId) {
