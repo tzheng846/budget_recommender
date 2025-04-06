@@ -14,6 +14,7 @@ interface ExpenseAnalysis {
     recommendation: string;
     estimatedSavings: string;
     link?: string;
+    linkText?: string;
   }[];
   quickTips: string[];
 }

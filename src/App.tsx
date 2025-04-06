@@ -6,6 +6,7 @@ import './App.css';
 import './styles/recommendations.css';
 import './styles/profile.css';
 import { Recommendations } from './components/dashboard/Recommendations';
+import { Profile } from './components/dashboard/Profile';
 import TestGemini from './components/TestGemini';
 
 // Register ChartJS components
@@ -154,112 +155,6 @@ function App() {
 
   const total = expenses.reduce((sum, e) => sum + e.amount, 0);
 
-  const ProfilePage = () => {
-    // Calculate spending by category
-    const categorySpending = expenses.reduce((acc, expense) => {
-      acc[expense.category] = (acc[expense.category] || 0) + expense.amount;
-      return acc;
-    }, {} as Record<string, number>);
-
-    // Calculate monthly spending
-    const monthlySpending = expenses.reduce((acc, expense) => {
-      const month = new Date(expense.createdAt).toLocaleString('default', { month: 'short' });
-      acc[month] = (acc[month] || 0) + expense.amount;
-      return acc;
-    }, {} as Record<string, number>);
-
-    // Prepare data for category pie chart
-    const categoryData = {
-      labels: Object.keys(categorySpending),
-      datasets: [
-        {
-          data: Object.values(categorySpending),
-          backgroundColor: [
-            '#FF6384',
-            '#36A2EB',
-            '#FFCE56',
-            '#4BC0C0',
-            '#9966FF',
-            '#FF9F40',
-            '#FF6384',
-            '#36A2EB',
-            '#FFCE56',
-            '#4BC0C0',
-            '#9966FF',
-            '#FF9F40'
-          ],
-        },
-      ],
-    };
-
-    // Prepare data for monthly bar chart
-    const monthlyData = {
-      labels: Object.keys(monthlySpending),
-      datasets: [
-        {
-          label: 'Monthly Spending',
-          data: Object.values(monthlySpending),
-          backgroundColor: '#36A2EB',
-        },
-      ],
-    };
-
-    return (
-      <div className="profile-container">
-        <h2>Profile Information</h2>
-        {user && (
-          <div className="profile-info">
-            <div className="profile-field">
-              <label>Name:</label>
-              <span>{user.name}</span>
-            </div>
-            <div className="profile-field">
-              <label>Email:</label>
-              <span>{user.email}</span>
-            </div>
-            <div className="profile-field">
-              <label>Email Verified:</label>
-              <span>{user.email_verified ? 'Yes' : 'No'}</span>
-            </div>
-            <div className="profile-field">
-              <label>Last Updated:</label>
-              <span>{user.updated_at ? new Date(user.updated_at).toLocaleDateString() : 'N/A'}</span>
-            </div>
-          </div>
-        )}
-
-        <div className="charts-container">
-          <div className="chart-section">
-            <h3>Spending by Category</h3>
-            <div className="chart-wrapper">
-              <Pie data={categoryData} />
-            </div>
-          </div>
-
-          <div className="chart-section">
-            <h3>Monthly Spending Trends</h3>
-            <div className="chart-wrapper">
-              <Bar 
-                data={monthlyData}
-                options={{
-                  responsive: true,
-                  plugins: {
-                    title: {
-                      display: true,
-                      text: 'Monthly Spending Overview'
-                    }
-                  }
-                }}
-              />
-            </div>
-          </div>
-        </div>
-
-        <button className="btn" onClick={() => setShowProfile(false)}>Back to Dashboard</button>
-      </div>
-    );
-  };
-
   return (
     <div className="wrapper">
       <nav className="nav">
@@ -270,8 +165,24 @@ function App() {
           <ul>
             {isAuthenticated ? (
               <>
-                <li><a href="#" className="link">Dashboard</a></li>
-                <li><a href="#" className="link" onClick={() => setShowProfile(true)}>Profile</a></li>
+                <li>
+                  <a 
+                    href="#" 
+                    className={`link ${!showProfile ? 'active' : ''}`}
+                    onClick={() => setShowProfile(false)}
+                  >
+                    Dashboard
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href="#" 
+                    className={`link ${showProfile ? 'active' : ''}`}
+                    onClick={() => setShowProfile(true)}
+                  >
+                    Profile
+                  </a>
+                </li>
               </>
             ) : (
               <>
@@ -298,7 +209,7 @@ function App() {
 
       {isAuthenticated ? (
         showProfile ? (
-          <ProfilePage />
+          <Profile expenses={expenses} user={user || {}} />
         ) : (
           <div className="dashboard-container">
             <h1>Welcome, {user?.name}!</h1>
@@ -366,13 +277,15 @@ function App() {
               </ul>
             </div>
 
-            {showRecommendations && <Recommendations expenses={expenses} />}
+            {showRecommendations && expenses.length > 0 && (
+              <Recommendations expenses={expenses} />
+            )}
           </div>
         )
       ) : (
-        <div className="welcome-container">
+        <div className="landing-container">
           <h1>Welcome to ShopSense</h1>
-          <p>Please sign in to manage your expenses and get personalized recommendations.</p>
+          <p>Sign in to start managing your expenses and get personalized recommendations.</p>
         </div>
       )}
       <TestGemini />

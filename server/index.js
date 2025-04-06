@@ -5,13 +5,17 @@ import { auth } from 'express-oauth2-jwt-bearer';
 import dotenv from 'dotenv';
 
 // Load environment variables
-dotenv.config({ path: '../.env' });
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
 // CORS configuration
-const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:5173'];
+const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [
+  'http://localhost:5173',
+  'https://budget-recommender.vercel.app'
+];
+
 app.use(cors({
   origin: allowedOrigins,
   credentials: true
@@ -22,8 +26,8 @@ app.use(express.json());
 
 // Auth0 JWT check middleware
 const jwtCheck = auth({
-  audience: 'http://localhost:3001',  // Must match exactly with frontend
-  issuerBaseURL: 'https://dev-m2w3ulj0iwxdhbtx.us.auth0.com',
+  audience: process.env.AUTH0_AUDIENCE || 'https://budget-recommender.railway.app',
+  issuerBaseURL: process.env.AUTH0_ISSUER_BASE_URL,
   tokenSigningAlg: 'RS256'
 });
 
@@ -49,7 +53,7 @@ const mongooseOptions = {
 };
 
 // Connect to MongoDB
-mongoose.connect('mongodb+srv://tzheng846:uUNgHkvbJP93Cc0w@budget-calculator.lrbzwby.mongodb.net/?retryWrites=true&w=majority&appName=budget-calculator', mongooseOptions)
+mongoose.connect(process.env.MONGODB_URI, mongooseOptions)
   .then(() => {
     console.log('✅ Connected to MongoDB');
     app.listen(PORT, () => {
