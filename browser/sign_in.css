@@ -8,10 +8,11 @@
     font-family: 'Poppins', sans-serif;
 }
 body{
-    background-color: lightblue;
-    background-size: cover;
+    background-image: url(../images/cart.jpg);
     background-repeat: no-repeat;
     background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
     overflow: hidden;
 }
 .wrapper{
@@ -124,42 +125,45 @@ header{
 }
 .two-forms{
     display: flex;
-    gap: 10px;
+    gap: 20px;
+    justify-content: space-between;
+    width: 100%;
 }
 .input-field{
     font-size: 15px;
-    background: rgba(255, 255, 255, 0.2);
-    color: #fff;
+    background: white; 
+    color: black; 
     height: 50px;
     width: 100%;
     padding: 0 10px 0 45px;
     border: none;
     border-radius: 30px;
     outline: none;
-    transition: .2s ease;
+    transition: 0.2s ease;
 }
 .input-field:hover, .input-field:focus{
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.9);
+    color: black; 
 }
 ::-webkit-input-placeholder{
-    color: #fff;
+    color: grey;
 }
 .input-box i{
     position: relative;
     top: -35px;
     left: 17px;
-    color: #fff;
+    color: grey;
 }
 .submit{
     font-size: 15px;
     font-weight: 500;
-    color: black;
+    color: grey;
     height: 45px;
     width: 100%;
     border: none;
     border-radius: 30px;
     outline: none;
-    background: rgba(255, 255, 255, 0.7);
+    background: white;
     cursor: pointer;
     transition: .3s ease-in-out;
 }
