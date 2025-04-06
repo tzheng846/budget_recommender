@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="sign_in.css" />
+  <title>Home - ShopSense</title>
+  <style>
+    /* Reset some default styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body, html {
+      height: 100%;
+      font-family: Arial, sans-serif;
+    }
+
+    /* Navigation styling */
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 30px;
+      background-color: white;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      position: fixed;
+      width: 100%;
+      z-index: 1000;
+    }
+
+    .nav-logo p {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .nav-menu ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav-menu ul li a {
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+    }
+
+    .nav-button .btn {
+      padding: 8px 15px;
+      margin-left: 10px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .white-btn {
+      background-color: white;
+      border: 1px solid #333;
+    }
+
+    .btn {
+      background-color: #333;
+      color: white;
+      border-radius: 4px;
+    }
+
+    .nav-menu-btn {
+      display: none;
+    }
+
+    /* Image header layout */
+    .image-header {
+      display: flex;
+      width: 100%;
+      height: 100vh;
+      margin-top: 70px; /* Space for fixed nav */
+    }
+
+    .image {
+      flex: 1;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .image1 {
+      background-image: url(../images/card.jpg);
+    }
+
+    .image2 {
+      background-image: url(../images/goods.jpg);
+    }
+
+    .image3 {
+      background-image: url(../images/smile.jpg);
+    }
+
+    .intro-text {
+      background: rgba(255, 255, 255, 0.8);
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      width: 100%;
+      height: 200px; /* Fixed height for uniformity */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    /* Responsive nav toggle (optional) */
+    @media (max-width: 768px) {
+      .nav-menu {
+        display: none;
+      }
+      .nav-menu.responsive {
+        display: block;
+        position: absolute;
+        top: 60px;
+        right: 30px;
+        background-color: white;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      }
+      .nav-menu ul {
+        flex-direction: column;
+        padding: 10px;
+      }
+      .nav-menu-btn {
+        display: block;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <!-- Navigation -->
+    <nav class="nav">
+      <div class="nav-logo">
+        <p>ShopSense.</p>
+      </div>
+      <div class="nav-menu" id="navMenu">
+        <ul>
+          <li><a href="#" class="link active">Home</a></li>
+          <li><a href="./about.html" class="link">About</a></li>
+          <li><a href="./explore.html" class="link">Explore</a></li>
+          <li><a href="./contact.html" class="link">Contact</a></li>
+        </ul>
+      </div>
+      <div class="nav-button">
+        <button class="btn white-btn" id="loginBtn" onclick="login()">Sign In</button>
+        <button class="btn" id="registerBtn" onclick="register()">Sign Up</button>
+      </div>
+      <div class="nav-menu-btn">
+        <i class="bx bx-menu" onclick="myMenuFunction()"></i>
+      </div>
+    </nav>
+
+    <!-- Three images side-by-side -->
+    <div class="image-header">
+      <div class="image image1">
+        <div class="intro-text">
+          <h1>Predictive Budgeting</h1>
+          <p>Utilize your purchase history to forecast your monthly spending and set realistic financial goals.</p>
+        </div>
+      </div>
+      <div class="image image2">
+        <div class="intro-text">
+          <h1>Dynamic Regulation</h1>
+          <p>Monitor your expenses in real time and receive proactive tips to adjust your budget efficiently.</p>
+        </div>
+      </div>
+      <div class="image image3">
+        <div class="intro-text">
+          <h1>Personalized Recommendations</h1>
+          <p>Experience tailored suggestions based on behavioral modeling to help you make smarter purchase decisions.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    function myMenuFunction() {
+      var i = document.getElementById("navMenu");
+      if (i.className === "nav-menu") {
+        i.className += " responsive";
+      } else {
+        i.className = "nav-menu";
+      }
+    }
+
+    function login() {
+      window.location.href = "login.html";
+    }
+
+    function register() {
+      window.location.href = "register.html";
+    }
+  </script>
+</body>
+</html>

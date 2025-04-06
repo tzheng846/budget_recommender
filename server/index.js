@@ -40,17 +40,20 @@ app.get('/api/health', (req, res) => {
 mongoose.connect(process.env.MONGODB_URI, {
   serverSelectionTimeoutMS: 5000,
   socketTimeoutMS: 45000,
-})
-.then(() => {
-  console.log('✅ Connected to MongoDB');
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`API Server running on port ${PORT}`);
+};
+
+// Connect to MongoDB
+mongoose.connect('mongodb+srv://tzheng846:p8a4q9UA6aIGQcBm@budget-calculator.lrbzwby.mongodb.net/?retryWrites=true&w=majority&appName=budget-calculator', mongooseOptions)
+  .then(() => {
+    console.log('✅ Connected to MongoDB');
+    app.listen(PORT, () => {
+      console.log(`API Server running on http://localhost:${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error('❌ MongoDB connection error:', err);
+    process.exit(1);
   });
-})
-.catch((err) => {
-  console.error('❌ MongoDB connection error:', err);
-  process.exit(1);
-});
 
 // Define Expense schema
 const expenseSchema = new mongoose.Schema({
