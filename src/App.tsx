@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import './App.css';
+import './styles/recommendations.css';
+import { Recommendations } from './components/dashboard/Recommendations';
+import TestGemini from './components/TestGemini';
 
 // Type for each expense item
 type Expense = {
@@ -11,15 +14,42 @@ type Expense = {
   createdAt: string;
 };
 
+// Type for new expense form
+type NewExpense = {
+  description: string;
+  amount: number;
+  category: string;
+};
+
+// Predefined categories
+const EXPENSE_CATEGORIES = [
+  'Food & Dining',
+  'Transportation',
+  'Housing',
+  'Utilities',
+  'Entertainment',
+  'Shopping',
+  'Healthcare',
+  'Education',
+  'Personal Care',
+  'Travel',
+  'Gifts & Donations',
+  'Other'
+];
+
 function App() {
   const { loginWithRedirect, logout, user, isAuthenticated, getAccessTokenSilently } = useAuth0();
   
   // State variables
   const [expenses, setExpenses] = useState<Expense[]>([]);
-  const [description, setDescription] = useState('');
-  const [amount, setAmount] = useState('');
-  const [category, setCategory] = useState('');
+  const [newExpense, setNewExpense] = useState<NewExpense>({
+    description: '',
+    amount: 0,
+    category: ''
+  });
+  const [showAddExpense, setShowAddExpense] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showRecommendations, setShowRecommendations] = useState(false);
 
   // Load expenses from the backend when the app starts
   useEffect(() => {
@@ -58,12 +88,7 @@ function App() {
 
     try {
       const token = await getAccessTokenSilently();
-      const newExpense = {
-        description,
-        amount: parseFloat(amount),
-        category,
-      };
-
+      
       // Send POST request to the backend
       const res = await fetch('http://localhost:3001/api/expenses', {
         method: 'POST',
@@ -81,13 +106,42 @@ function App() {
 
       const data = await res.json();
       setExpenses(prevExpenses => [...prevExpenses, data]);
-      setDescription('');
-      setAmount('');
-      setCategory('');
+      setNewExpense({
+        description: '',
+        amount: 0,
+        category: ''
+      });
       setError(null);
     } catch (error) {
       console.error('Error adding expense:', error);
       setError(error instanceof Error ? error.message : 'Failed to add expense');
+    }
+  };
+
+  const handleRemoveExpense = async (index: number) => {
+    try {
+      const expenseToRemove = expenses[index];
+      const token = await getAccessTokenSilently();
+      
+      const res = await fetch(`http://localhost:3001/api/expenses/${expenseToRemove._id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Failed to delete expense');
+      }
+
+      // Only remove from state if the backend deletion was successful
+      setExpenses(prevExpenses => prevExpenses.filter((_, i) => i !== index));
+      setError(null);
+    } catch (error) {
+      console.error('Error removing expense:', error);
+      setError(error instanceof Error ? error.message : 'Failed to remove expense');
     }
   };
 
@@ -141,8 +195,8 @@ function App() {
                 <input
                   className="input-field"
                   placeholder="Description"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                  value={newExpense.description}
+                  onChange={(e) => setNewExpense({...newExpense, description: e.target.value})}
                 />
               </div>
               <div className="input-box">
@@ -150,44 +204,65 @@ function App() {
                   className="input-field"
                   placeholder="Amount"
                   type="number"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
+                  value={newExpense.amount || ''}
+                  onChange={(e) => setNewExpense({...newExpense, amount: parseFloat(e.target.value) || 0})}
                 />
               </div>
               <div className="input-box">
-                <input
+                <select
                   className="input-field"
-                  placeholder="Category"
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                />
+                  value={newExpense.category}
+                  onChange={(e) => setNewExpense({...newExpense, category: e.target.value})}
+                >
+                  <option value="">Select a category</option>
+                  {EXPENSE_CATEGORIES.map(category => (
+                    <option key={category} value={category}>{category}</option>
+                  ))}
+                </select>
               </div>
               <button type="submit" className="submit">Add Expense</button>
             </form>
           </div>
 
           <div className="expenses-list">
-            <h2>Total Spent: ${total.toFixed(2)}</h2>
+            <div className="expenses-header">
+              <h2>Total Spent: ${total.toFixed(2)}</h2>
+              <button 
+                className="generate-recommendations-btn"
+                onClick={() => setShowRecommendations(!showRecommendations)}
+              >
+                {showRecommendations ? 'Hide Recommendations' : 'Generate Recommendations'}
+              </button>
+            </div>
             <ul>
-              {expenses.map((exp) => (
+              {expenses.map((exp, index) => (
                 <li key={exp._id} className="expense-item">
                   <span className="expense-description">{exp.description}</span>
-                  <span className="expense-amount">${exp.amount}</span>
+                  <span className="expense-amount">${exp.amount.toFixed(2)}</span>
                   <span className="expense-category">{exp.category}</span>
+                  <button 
+                    className="remove-btn"
+                    onClick={() => handleRemoveExpense(index)}
+                  >
+                    Remove
+                  </button>
                 </li>
               ))}
             </ul>
           </div>
+
+          {showRecommendations && <Recommendations expenses={expenses} />}
         </div>
       ) : (
         <div className="welcome-container">
           <h1>Welcome to ShopSense</h1>
-          <p>Track your expenses and manage your budget effectively.</p>
+          <p>Track your expenses and get AI-powered recommendations for better financial management.</p>
           <button className="btn white-btn" onClick={() => loginWithRedirect()}>
             Get Started
           </button>
         </div>
       )}
+      <TestGemini />
     </div>
   );
 }

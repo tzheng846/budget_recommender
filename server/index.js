@@ -94,3 +94,22 @@ app.post('/api/expenses', jwtCheck, async (req, res) => {
     res.status(500).json({ error: 'Failed to create expense' });
   }
 });
+
+// Delete expense
+app.delete('/api/expenses/:id', jwtCheck, async (req, res) => {
+  try {
+    const expense = await Expense.findOneAndDelete({
+      _id: req.params.id,
+      userId: req.auth.payload.sub
+    });
+
+    if (!expense) {
+      return res.status(404).json({ error: 'Expense not found' });
+    }
+
+    res.status(200).json({ message: 'Expense deleted successfully' });
+  } catch (error) {
+    console.error('DELETE /api/expenses/:id - Error:', error);
+    res.status(500).json({ error: 'Failed to delete expense' });
+  }
+});
