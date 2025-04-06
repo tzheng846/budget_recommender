@@ -10,6 +10,7 @@ export interface ExpenseAnalysis {
     recommendation: string;
     estimatedSavings: string;
     link?: string;
+    linkText?: string;
   }[];
   quickTips: string[];
 }
@@ -20,7 +21,7 @@ export async function analyzeExpenses(expenses: Array<{ description: string; amo
     const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-lite' });
 
     // Prepare the prompt
-    const prompt = `Analyze these expenses and provide concise, actionable recommendations with specific savings opportunities and relevant shopping links:
+    const prompt = `Analyze these expenses and provide concise, actionable recommendations with specific savings opportunities and real shopping links:
     ${JSON.stringify(expenses, null, 2)}
     
     Please provide a response in the following JSON format:
@@ -31,7 +32,8 @@ export async function analyzeExpenses(expenses: Array<{ description: string; amo
           "category": "Category name",
           "recommendation": "Specific actionable recommendation",
           "estimatedSavings": "Estimated monthly/yearly savings",
-          "link": "Relevant shopping or comparison site link"
+          "link": "Actual shopping link URL",
+          "linkText": "Descriptive text for the link"
         }
       ],
       "quickTips": [
@@ -41,12 +43,21 @@ export async function analyzeExpenses(expenses: Array<{ description: string; amo
       ]
     }
     
+    Important guidelines for links:
+    1. For shopping comparisons, use real links to: Amazon.com, Walmart.com, Target.com, or other major retailers
+    2. For groceries and food, link to: Instacart.com, local grocery chains, or meal planning services
+    3. For utilities, link to actual service comparison sites or energy-saving product pages
+    4. For entertainment, link to actual streaming service comparison pages or deal sites
+    5. For travel, link to actual booking sites like Kayak, Expedia, or airline websites
+    6. Each link must be a real, working URL starting with https://
+    7. Include descriptive link text that explains what the user will find
+    
     Focus on:
     1. Most impactful savings opportunities
     2. Specific, actionable recommendations
-    3. Real, relevant shopping or comparison site links
+    3. Real, working shopping or comparison URLs
     4. Clear, concise language
-    5. Realistic savings estimates`;
+    5. Realistic savings estimates based on typical market prices`;
 
     // Generate content
     const result = await model.generateContent(prompt);
@@ -60,7 +71,26 @@ export async function analyzeExpenses(expenses: Array<{ description: string; amo
       .trim();                     // Remove any extra whitespace
 
     // Parse the JSON response
-    return JSON.parse(cleanedText) as ExpenseAnalysis;
+    const analysis = JSON.parse(cleanedText) as ExpenseAnalysis;
+
+    // Validate and clean up links
+    analysis.specificSavings = analysis.specificSavings.map(saving => {
+      // Ensure link is a valid URL
+      if (saving.link) {
+        try {
+          const url = new URL(saving.link);
+          if (!url.protocol.startsWith('http')) {
+            saving.link = `https://${saving.link}`;
+          }
+        } catch {
+          // If URL is invalid, provide a fallback
+          saving.link = undefined;
+        }
+      }
+      return saving;
+    });
+
+    return analysis;
   } catch (error) {
     console.error('Error analyzing expenses:', error);
     throw error;

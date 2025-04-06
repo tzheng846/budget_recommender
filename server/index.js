@@ -5,13 +5,17 @@ import { auth } from 'express-oauth2-jwt-bearer';
 import dotenv from 'dotenv';
 
 // Load environment variables
-dotenv.config({ path: '../.env' });
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
 // CORS configuration
-const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:5173'];
+const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [
+  'http://localhost:5173',
+  'https://budget-recommender.vercel.app'
+];
+
 app.use(cors({
   origin: allowedOrigins,
   credentials: true
@@ -22,8 +26,8 @@ app.use(express.json());
 
 // Auth0 JWT check middleware
 const jwtCheck = auth({
-  audience: 'http://localhost:3001',  // Must match exactly with frontend
-  issuerBaseURL: 'https://dev-m2w3ulj0iwxdhbtx.us.auth0.com',
+  audience: process.env.AUTH0_AUDIENCE || 'https://budget-recommender.railway.app',
+  issuerBaseURL: process.env.AUTH0_ISSUER_BASE_URL,
   tokenSigningAlg: 'RS256'
 });
 
@@ -32,24 +36,21 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
-// MongoDB connection options
-const mongooseOptions = {
+// MongoDB connection
+mongoose.connect(process.env.MONGODB_URI, {
   serverSelectionTimeoutMS: 5000,
   socketTimeoutMS: 45000,
-};
-
-// Connect to MongoDB
-mongoose.connect('mongodb+srv://tzheng846:p8a4q9UA6aIGQcBm@budget-calculator.lrbzwby.mongodb.net/?retryWrites=true&w=majority&appName=budget-calculator', mongooseOptions)
-  .then(() => {
-    console.log('✅ Connected to MongoDB');
-    app.listen(PORT, () => {
-      console.log(`API Server running on http://localhost:${PORT}`);
-    });
-  })
-  .catch((err) => {
-    console.error('❌ MongoDB connection error:', err);
-    process.exit(1);
+})
+.then(() => {
+  console.log('✅ Connected to MongoDB');
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`API Server running on port ${PORT}`);
   });
+})
+.catch((err) => {
+  console.error('❌ MongoDB connection error:', err);
+  process.exit(1);
+});
 
 // Define Expense schema
 const expenseSchema = new mongoose.Schema({

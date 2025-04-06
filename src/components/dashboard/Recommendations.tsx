@@ -14,6 +14,7 @@ interface ExpenseAnalysis {
     recommendation: string;
     estimatedSavings: string;
     link?: string;
+    linkText?: string;
   }[];
   quickTips: string[];
 }
@@ -80,7 +81,7 @@ export function Recommendations({ expenses }: { expenses: Expense[] }) {
                   rel="noopener noreferrer"
                   className="action-link"
                 >
-                  Learn More
+                  {saving.linkText || 'View Savings Opportunity'} →
                 </a>
               )}
             </div>

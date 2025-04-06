@@ -79,17 +79,23 @@
 }
 
 .action-link {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   color: #1976d2;
   text-decoration: none;
   font-weight: 500;
-  margin-top: 0.5rem;
-  transition: color 0.2s;
+  margin-top: 0.75rem;
+  padding: 0.5rem 1rem;
+  background: rgba(25, 118, 210, 0.1);
+  border-radius: 4px;
+  transition: all 0.2s ease;
 }
 
 .action-link:hover {
   color: #1565c0;
-  text-decoration: underline;
+  background: rgba(25, 118, 210, 0.2);
+  text-decoration: none;
+  transform: translateX(4px);
 }
 
 /* Quick Tips */

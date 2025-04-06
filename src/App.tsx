@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import './App.css';
 import './styles/recommendations.css';
+import './styles/profile.css';
 import { Recommendations } from './components/dashboard/Recommendations';
+import { Profile } from './components/dashboard/Profile';
 import TestGemini from './components/TestGemini';
 
 // Type for each expense item
@@ -50,6 +52,7 @@ function App() {
   const [showAddExpense, setShowAddExpense] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showRecommendations, setShowRecommendations] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
 
   // Load expenses from the backend when the app starts
   useEffect(() => {
@@ -155,16 +158,26 @@ function App() {
         </div>
         <div className="nav-menu" id="navMenu">
           <ul>
-            {isAuthenticated ? (
+            {isAuthenticated && (
               <>
-                <li><a href="#" className="link">Dashboard</a></li>
-                <li><a href="#" className="link">Profile</a></li>
-                <li><a href="#" className="link">Settings</a></li>
-              </>
-            ) : (
-              <>
-                <li><a href="#" className="link active">Home</a></li>
-                <li><a href="#" className="link">About</a></li>
+                <li>
+                  <a 
+                    href="#" 
+                    className={`link ${!showProfile ? 'active' : ''}`}
+                    onClick={() => setShowProfile(false)}
+                  >
+                    Dashboard
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href="#" 
+                    className={`link ${showProfile ? 'active' : ''}`}
+                    onClick={() => setShowProfile(true)}
+                  >
+                    Profile
+                  </a>
+                </li>
               </>
             )}
           </ul>
@@ -185,81 +198,84 @@ function App() {
       {error && <div className="error-message">{error}</div>}
 
       {isAuthenticated ? (
-        <div className="dashboard-container">
-          <h1>Welcome, {user?.name}!</h1>
-          
-          <div className="expense-form">
-            <h2>Add New Expense</h2>
-            <form onSubmit={handleSubmit}>
-              <div className="input-box">
-                <input
-                  className="input-field"
-                  placeholder="Description"
-                  value={newExpense.description}
-                  onChange={(e) => setNewExpense({...newExpense, description: e.target.value})}
-                />
-              </div>
-              <div className="input-box">
-                <input
-                  className="input-field"
-                  placeholder="Amount"
-                  type="number"
-                  value={newExpense.amount || ''}
-                  onChange={(e) => setNewExpense({...newExpense, amount: parseFloat(e.target.value) || 0})}
-                />
-              </div>
-              <div className="input-box">
-                <select
-                  className="input-field"
-                  value={newExpense.category}
-                  onChange={(e) => setNewExpense({...newExpense, category: e.target.value})}
-                >
-                  <option value="">Select a category</option>
-                  {EXPENSE_CATEGORIES.map(category => (
-                    <option key={category} value={category}>{category}</option>
-                  ))}
-                </select>
-              </div>
-              <button type="submit" className="submit">Add Expense</button>
-            </form>
-          </div>
-
-          <div className="expenses-list">
-            <div className="expenses-header">
-              <h2>Total Spent: ${total.toFixed(2)}</h2>
-              <button 
-                className="generate-recommendations-btn"
-                onClick={() => setShowRecommendations(!showRecommendations)}
-              >
-                {showRecommendations ? 'Hide Recommendations' : 'Generate Recommendations'}
-              </button>
-            </div>
-            <ul>
-              {expenses.map((exp, index) => (
-                <li key={exp._id} className="expense-item">
-                  <span className="expense-description">{exp.description}</span>
-                  <span className="expense-amount">${exp.amount.toFixed(2)}</span>
-                  <span className="expense-category">{exp.category}</span>
-                  <button 
-                    className="remove-btn"
-                    onClick={() => handleRemoveExpense(index)}
+        showProfile ? (
+          <Profile expenses={expenses} user={user || {}} />
+        ) : (
+          <div className="dashboard-container">
+            <h1>Welcome, {user?.name}!</h1>
+            
+            <div className="expense-form">
+              <h2>Add New Expense</h2>
+              <form onSubmit={handleSubmit}>
+                <div className="input-box">
+                  <input
+                    className="input-field"
+                    placeholder="Description"
+                    value={newExpense.description}
+                    onChange={(e) => setNewExpense({...newExpense, description: e.target.value})}
+                  />
+                </div>
+                <div className="input-box">
+                  <input
+                    className="input-field"
+                    placeholder="Amount"
+                    type="number"
+                    value={newExpense.amount || ''}
+                    onChange={(e) => setNewExpense({...newExpense, amount: parseFloat(e.target.value) || 0})}
+                  />
+                </div>
+                <div className="input-box">
+                  <select
+                    className="input-field"
+                    value={newExpense.category}
+                    onChange={(e) => setNewExpense({...newExpense, category: e.target.value})}
                   >
-                    Remove
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
+                    <option value="">Select a category</option>
+                    {EXPENSE_CATEGORIES.map(category => (
+                      <option key={category} value={category}>{category}</option>
+                    ))}
+                  </select>
+                </div>
+                <button type="submit" className="submit">Add Expense</button>
+              </form>
+            </div>
 
-          {showRecommendations && <Recommendations expenses={expenses} />}
-        </div>
+            <div className="expenses-list">
+              <div className="expenses-header">
+                <h2>Total Spent: ${total.toFixed(2)}</h2>
+                <button 
+                  className="generate-recommendations-btn"
+                  onClick={() => setShowRecommendations(!showRecommendations)}
+                >
+                  {showRecommendations ? 'Hide Recommendations' : 'Generate Recommendations'}
+                </button>
+              </div>
+              <ul>
+                {expenses.map((exp, index) => (
+                  <li key={exp._id} className="expense-item">
+                    <span className="expense-description">{exp.description}</span>
+                    <span className="expense-amount">${exp.amount.toFixed(2)}</span>
+                    <span className="expense-category">{exp.category}</span>
+                    <button 
+                      className="remove-btn"
+                      onClick={() => handleRemoveExpense(index)}
+                    >
+                      Remove
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {showRecommendations && expenses.length > 0 && (
+              <Recommendations expenses={expenses} />
+            )}
+          </div>
+        )
       ) : (
-        <div className="welcome-container">
+        <div className="landing-container">
           <h1>Welcome to ShopSense</h1>
-          <p>Track your expenses and get AI-powered recommendations for better financial management.</p>
-          <button className="btn white-btn" onClick={() => loginWithRedirect()}>
-            Get Started
-          </button>
+          <p>Sign in to start managing your expenses and get personalized recommendations.</p>
         </div>
       )}
       <TestGemini />
