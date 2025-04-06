@@ -1,0 +1,17 @@
+[33mc6e02c4[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m Added deployment configuration for Vercel and Railway
+[33mfdc184d[m Added expense management system with AI recommendations: - New ExpenseList component for managing expenses - Recommendations component with Gemini AI integration - Improved UI/UX with better styling - Added TypeScript support - Enhanced server functionality
+[33m766c2c9[m styling the logout page
+[33md9d75a5[m feat: integrate Auth0 and modernize UI with new design system
+[33m2a19cd4[m connecting backend with profile.html
+[33mcce661b[m profile page
+[33mc9f1761[m changed terms & conditions page
+[33m6fb83ad[m Merge branch 'main' of https://github.com/tzheng846/budget_recommender
+[33m4c72d2a[m new working site
+[33m8d89bd0[m added account page
+[33mfb631ac[m added account pages
+[33mf66545e[m added homepage
+[33m0d535db[m Merge pull request #1 from tzheng846/frontend
+[33mddf26f9[m[33m ([m[1;31morigin/frontend[m[33m)[m add sign-in and registration page with responsive design
+[33m262d4e5[m mongel db and auth0 integration
+[33maddf6e4[m working version basic
+[33m67129e2[m inital

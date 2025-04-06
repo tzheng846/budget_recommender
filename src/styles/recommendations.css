@@ -46,9 +46,10 @@
 }
 
 .saving-item {
-  background: #f8f9fa;
-  padding: 1rem;
-  border-radius: 6px;
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-bottom: 1rem;
 }
 
@@ -60,36 +61,53 @@
 }
 
 .category {
-  font-weight: 600;
-  color: #2c3e50;
-  background: #e3f2fd;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
+  font-weight: bold;
+  color: #333;
 }
 
 .estimated-savings {
   color: #4CAF50;
-  font-weight: 600;
+  font-weight: bold;
 }
 
 .recommendation {
-  color: #2c3e50;
-  margin: 0.5rem 0;
-  line-height: 1.5;
+  color: #666;
+  margin: 1rem 0;
+}
+
+.action-links {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
 .action-link {
-  display: inline-block;
-  color: #1976d2;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
   text-decoration: none;
   font-weight: 500;
-  margin-top: 0.5rem;
-  transition: color 0.2s;
+  transition: all 0.3s ease;
 }
 
-.action-link:hover {
-  color: #1565c0;
-  text-decoration: underline;
+.action-link.primary {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.action-link.primary:hover {
+  background-color: #45a049;
+  transform: translateY(-2px);
+}
+
+.action-link.secondary {
+  background-color: #f8f9fa;
+  color: #333;
+  border: 1px solid #ddd;
+}
+
+.action-link.secondary:hover {
+  background-color: #e9ecef;
+  transform: translateY(-2px);
 }
 
 /* Quick Tips */

@@ -74,14 +74,24 @@ export function Recommendations({ expenses }: { expenses: Expense[] }) {
               </div>
               <p className="recommendation">{saving.recommendation}</p>
               {saving.link && (
-                <a 
-                  href={saving.link} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="action-link"
-                >
-                  Learn More
-                </a>
+                <div className="action-links">
+                  <a 
+                    href={saving.link} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="action-link primary"
+                  >
+                    Shop Now
+                  </a>
+                  <a 
+                    href={saving.link} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="action-link secondary"
+                  >
+                    Compare Prices
+                  </a>
+                </div>
               )}
             </div>
           ))}

@@ -23,6 +23,20 @@ export async function analyzeExpenses(expenses: Array<{ description: string; amo
     const prompt = `Analyze these expenses and provide concise, actionable recommendations with specific savings opportunities and relevant shopping links:
     ${JSON.stringify(expenses, null, 2)}
     
+    For each category, use these specific shopping and comparison sites:
+    - Food & Dining: https://www.instacart.com https://www.amazon.com/Amazon-Fresh https://www.walmart.com/grocery
+    - Transportation: https://www.gasbuddy.com https://www.uber.com https://www.lyft.com
+    - Housing: https://www.zillow.com https://www.apartments.com https://www.realtor.com
+    - Utilities: https://www.energysage.com https://www.saveonenergy.com
+    - Entertainment: https://www.netflix.com https://www.hulu.com https://www.spotify.com
+    - Shopping: https://www.rakuten.com https://www.joinhoney.com https://www.retailmenot.com
+    - Healthcare: https://www.goodrx.com https://www.healthcare.gov
+    - Education: https://www.coursera.org https://www.udemy.com https://www.khanacademy.org
+    - Personal Care: https://www.ulta.com https://www.sephora.com https://www.walmart.com/beauty
+    - Travel: https://www.kayak.com https://www.booking.com https://www.expedia.com
+    - Gifts & Donations: https://www.charitynavigator.org https://www.gofundme.com
+    - Other: https://www.ebay.com https://www.craigslist.org
+    
     Please provide a response in the following JSON format:
     {
       "topRecommendation": "One most impactful recommendation",
@@ -31,7 +45,7 @@ export async function analyzeExpenses(expenses: Array<{ description: string; amo
           "category": "Category name",
           "recommendation": "Specific actionable recommendation",
           "estimatedSavings": "Estimated monthly/yearly savings",
-          "link": "Relevant shopping or comparison site link"
+          "link": "Relevant shopping or comparison site link from the list above"
         }
       ],
       "quickTips": [
@@ -44,7 +58,7 @@ export async function analyzeExpenses(expenses: Array<{ description: string; amo
     Focus on:
     1. Most impactful savings opportunities
     2. Specific, actionable recommendations
-    3. Real, relevant shopping or comparison site links
+    3. Real, relevant shopping or comparison site links from the provided list
     4. Clear, concise language
     5. Realistic savings estimates`;
 

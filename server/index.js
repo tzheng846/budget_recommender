@@ -32,6 +32,16 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
+// Auth0 Signin route
+app.get('/signin', (req, res) => {
+  res.redirect(`https://${process.env.VITE_AUTH0_DOMAIN}/authorize?response_type=code&client_id=${process.env.AUTH0_CLIENT_ID}&redirect_uri=${process.env.AUTH0_BASE_URL}/callback&scope=openid%20profile%20email`);
+});
+
+// Auth0 Callback route
+app.get('/callback', (req, res) => {
+  res.redirect(`${process.env.AUTH0_BASE_URL}/dashboard`);
+});
+
 // MongoDB connection options
 const mongooseOptions = {
   serverSelectionTimeoutMS: 5000,
@@ -39,7 +49,7 @@ const mongooseOptions = {
 };
 
 // Connect to MongoDB
-mongoose.connect('mongodb+srv://tzheng846:p8a4q9UA6aIGQcBm@budget-calculator.lrbzwby.mongodb.net/?retryWrites=true&w=majority&appName=budget-calculator', mongooseOptions)
+mongoose.connect('mongodb+srv://tzheng846:uUNgHkvbJP93Cc0w@budget-calculator.lrbzwby.mongodb.net/?retryWrites=true&w=majority&appName=budget-calculator', mongooseOptions)
   .then(() => {
     console.log('✅ Connected to MongoDB');
     app.listen(PORT, () => {
