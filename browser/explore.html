@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Explore Shops - ShopSense</title>
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Global Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+    body {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      color: black;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url(../images/cart.jpg) center center / cover no-repeat;
+      filter: blur(8px);
+      z-index: -2;
+    }
+    body::after {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.4);
+      z-index: -1;
+    }
+    
+    /* Navigation Bar */
+    .nav {
+      height: 80px;
+      width: 100%;
+      backdrop-filter: blur(15px);
+      background: rgba(255, 255, 255, 0.1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 30px;
+      position: fixed;
+      top: 0;
+      z-index: 1000;
+    }
+    .nav-logo p {
+      color: #ba5106;
+      font-size: 25px;
+      font-weight: 600;
+    }
+    .nav-menu ul {
+      display: flex;
+      list-style: none;
+    }
+    .nav-menu ul li {
+      margin: 0 10px;
+    }
+    /* Holographic Nav Links */
+    .holographic-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: none;
+    }
+    .holographic-card {
+      width: 100px;
+      height: 40px;
+      background: rgba(81, 81, 81, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      border-radius: 10px;
+      transition: all 0.5s ease;
+    }
+    .holographic-card a {
+      color: rgb(255, 255, 255);
+      font-size: 1rem;
+      text-decoration: none;
+      position: relative;
+      z-index: 2;
+      font-weight: 500;
+    }
+    .holographic-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        0deg,
+        transparent,
+        transparent 30%,
+        rgba(228, 159, 54, 0.887)
+      );
+      transform: rotate(-45deg) translateY(-100%);
+      transition: all 0.5s ease;
+      opacity: 0;
+    }
+    .holographic-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(184, 95, 17, 0.5);
+    }
+    .holographic-card:hover::before {
+      opacity: 1;
+      transform: rotate(-45deg) translateY(0);
+    }
+    
+    /* Main Content */
+    main {
+      flex: 1;
+      padding-top: 100px; /* accounts for navbar height */
+      overflow-y: auto;
+      width: 100%;
+    }
+    .explore-container {
+      background-color: rgba(255, 255, 255, 0.85);
+      padding: 30px;
+      border-radius: 15px;
+      max-width: 1200px;
+      width: 90%;
+      margin: 20px auto;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+    .explore-container h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 32px;
+      color: #333;
+    }
+    .shop-listing {
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #ccc;
+    }
+    .shop-listing:last-child {
+      border-bottom: none;
+    }
+    .shop-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    .shop-logo {
+      width: 50px; /* Update this size if needed */
+      height: 50px; /* Update this size if needed */
+      margin-right: 15px;
+      border-radius: 50%; /* Optional: for circular logos */
+      object-fit: cover;
+    }
+    .shop-name {
+      font-size: 24px;
+      color: #ba5106;
+    }
+    .product-list {
+      list-style: none;
+      padding-left: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .product-item {
+      background-color: #fff;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      flex: 1 1 calc(20% - 10px);
+      text-align: center;
+      min-width: 120px;
+    }
+    .product-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+    .product-image {
+      width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
+    
+    /* Footer */
+    footer {
+      height: 60px;
+      text-align: center;
+      line-height: 60px;
+      color: #333;
+      background: transparent;
+    }
+    
+    @media only screen and (max-width: 600px) {
+      .nav {
+        flex-direction: column;
+        height: auto;
+        padding: 10px 0;
+      }
+      .nav-menu ul {
+        flex-direction: column;
+        margin-top: 10px;
+      }
+      .explore-container {
+        margin: 0 20px;
+      }
+      .product-list {
+        flex-direction: column;
+      }
+      .product-item {
+        flex: 1 1 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="nav">
+    <div class="nav-logo">
+      <p>ShopSense.</p>
+    </div>
+    <div class="nav-menu">
+      <ul>
+        <li>
+          <div class="holographic-container">
+            <div class="holographic-card">
+              <a href="./home.html">Home</a>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="holographic-container">
+            <div class="holographic-card">
+              <a href="./about.html">About</a>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="holographic-container">
+            <div class="holographic-card">
+              <a href="./explore.html">Explore</a>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Main Content: Long List of Shops with Recommended Items -->
+  <main>
+    <div class="explore-container">
+      <h1>Explore Shops</h1>
+      
+      <!-- Shop Listing Example for a Brick and Mortar Store -->
+      <div class="shop-listing">
+        <div class="shop-header">
+          <!-- Replace the src attribute below with your shop logo URL -->
+          <img src="../images/walmart.webp" alt="Walmart Logo" class="shop-logo">
+          <span class="shop-name">Walmart</span>
+        </div>
+        <ul class="product-list">
+          <!-- Replace the src attribute below with your product image URL -->
+          <li class="product-item">
+            <a href="#"><img src="https://via.placeholder.com/150" alt="Recommended Item 1" class="product-image"></a>
+          </li>
+          <li class="product-item">
+            <a href="#"><img src="https://via.placeholder.com/150" alt="Recommended Item 2" class="product-image"></a>
+          </li>
+          <li class="product-item">
+            <a href="#"><img src="https://via.placeholder.com/150" alt="Recommended Item 3" class="product-image"></a>
+          </li>
+          <li class="product-item">
+            <a href="#"><img src="https://via.placeholder.com/150" alt="Recommended Item 4" class="product-image"></a>
+          </li>
+          <li class="product-item">
+            <a href="#"><img src="https://via.placeholder.com/150" alt="Recommended Item 5" class="product-image"></a>
+          </li>
+        </ul>
+      </div>
+      
+      <!-- Shop Listing Example for another Brick and Mortar Store -->
+      <div class="shop-listing">
+        <div class="shop-header">
+          <!-- Update with Target's logo URL -->
+          <img src="https://corporate.target.com/getmedia/a19146a3-2115-4700-9bf9-17272dec8aee/target-logo.png?width=1144" alt="Target Logo" class="shop-logo">
+          <span class="shop-name">Target</span>
+        </div>
+        <ul class="product-list">
+          <li class="product-item">
+            <a href="#"><img src="https://via.placeholder.com/150" alt="Recommended Item 1" class="product-image"></a>
+          </li>
+          <li class="product-item">
+            <a href="#"><img src="https://via.placeholder.com/150" alt="Recommended Item 2" class="product-image"></a>
+          </li>
+          <li class="product-item">
+            <a href="#"><img src="https://via.placeholder.com/150" alt="Recommended Item 3" class="product-image"></a>
+          </li>
+          <li class="product-item">
+            <a href="#"><img src="https://via.placeholder.com/150" alt="Recommended Item 4" class="product-image"></a>
+          </li>
+          <li class="product-item">
+            <a href="#"><img src="https://via.placeholder.com/150" alt="Recommended Item 5" class="product-image"></a>
+          </li>
+        </ul>
+      </div>
+      
+      <!-- Shop Listing Example for an Online Shop -->
+      <div class="shop-listing">
+        <div class="shop-header">
+          <!-- Update with Amazon's logo URL -->
+          <img src="https://cdn4.iconfinder.com/data/icons/flat-brand-logo-2/512/amazon-1024.png" alt="Amazon Logo" class="shop-logo">
+          <span class="shop-name">Amazon</span>
+        </div>
+        <ul class="product-list">
+          <li class="product-item">
+            <a href="#"><img src="https://via.placeholder.com/150" alt="Recommended Item 1" class="product-image"></a>
+          </li>
+          <li class="product-item">
+            <a href="#"><img src="https://via.placeholder.com/150" alt="Recommended Item 2" class="product-image"></a>
+          </li>
+          <li class="product-item">
+            <a href="#"><img src="https://via.placeholder.com/150" alt="Recommended Item 3" class="product-image"></a>
+          </li>
+          <li class="product-item">
+            <a href="#"><img src="https://via.placeholder.com/150" alt="Recommended Item 4" class="product-image"></a>
+          </li>
+          <li class="product-item">
+            <a href="#"><img src="https://via.placeholder.com/150" alt="Recommended Item 5" class="product-image"></a>
+          </li>
+        </ul>
+      </div>
+      
+      <!-- Shop Listing Example for another Online Shop -->
+      <div class="shop-listing">
+        <div class="shop-header">
+          <!-- Update with Instacart's logo URL -->
+          <img src="https://npr.brightspotcdn.com/dims4/default/0c452a9/2147483647/strip/true/crop/415x298+0+0/resize/1760x1264!/format/webp/quality/90/?url=http%3A%2F%2Fnpr-brightspot.s3.amazonaws.com%2Fda%2F34%2Fef59110c4e9cbb0bfa7d43299202%2Fistacart-logo.png" alt="Instacart Logo" class="shop-logo">
+          <span class="shop-name">Instacart</span>
+        </div>
+        <ul class="product-list">
+          <li class="product-item">
+            <a href="#"><img src="https://via.placeholder.com/150" alt="Recommended Item 1" class="product-image"></a>
+          </li>
+          <li class="product-item">
+            <a href="#"><img src="https://via.placeholder.com/150" alt="Recommended Item 2" class="product-image"></a>
+          </li>
+          <li class="product-item">
+            <a href="#"><img src="https://via.placeholder.com/150" alt="Recommended Item 3" class="product-image"></a>
+          </li>
+          <li class="product-item">
+            <a href="#"><img src="https://via.placeholder.com/150" alt="Recommended Item 4" class="product-image"></a>
+          </li>
+          <li class="product-item">
+            <a href="#"><img src="https://via.placeholder.com/150" alt="Recommended Item 5" class="product-image"></a>
+          </li>
+        </ul>
+      </div>
+      
+      <!-- Additional shop listings can be added here -->
+      
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 ShopSense. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>
