@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
 
 // Type for each expense item
 type Expense = {
@@ -9,6 +10,9 @@ type Expense = {
 };
 
 function App() {
+  // Call the Auth0 hook inside the component
+  const { loginWithRedirect, logout, user, isAuthenticated } = useAuth0();
+
   // State variables
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [description, setDescription] = useState('');
@@ -52,6 +56,18 @@ function App() {
 
   return (
     <div style={{ maxWidth: '600px', margin: '0 auto', padding: '1rem' }}>
+      {/* Login/Logout UI */}
+      {isAuthenticated ? (
+        <div>
+          <p>Welcome, {user?.name}!</p>
+          <button onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}>
+            Log Out
+          </button>
+        </div>
+      ) : (
+        <button onClick={() => loginWithRedirect()}>Log In</button>
+      )}
+
       <h1>Budget Tracker</h1>
 
       <form onSubmit={handleSubmit}>
