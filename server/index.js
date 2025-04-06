@@ -1,71 +1,94 @@
-const express = require('express');
-const cors = require('cors');
-const mongoose = require('mongoose');
+import express from 'express';
+import cors from 'cors';
+import mongoose from 'mongoose';
+import { auth } from 'express-oauth2-jwt-bearer';
 
 const app = express();
 const PORT = 3001;
 
-const { expressjwt: jwt } = require('express-jwt');
-const jwksRsa = require('jwks-rsa');
-
-const checkJwt = jwt({
-  secret: jwksRsa.expressJwtSecret({
-    cache: true,
-    rateLimit: true,
-    jwksRequestsPerMinute: 5,
-    jwksUri: 'https://dev-m2w3ulj0iwxdhbtx.us.auth0.com/.well-known/jwks.json'
-  }),
-  audience: 'https://dev-m2w3ulj0iwxdhbtx.us.auth0.com/api/v2/', // set this in Auth0 API settings
-  issuer: 'https://dev-m2w3ulj0iwxdhbtx.us.auth0.com/',
-  algorithms: ['RS256']
+// Auth0 configuration
+const jwtCheck = auth({
+  audience: 'http://localhost:3001',
+  issuerBaseURL: 'https://dev-m2w3ulj0iwxdhbtx.us.auth0.com/',
+  tokenSigningAlg: 'RS256'
 });
 
-// ✅ Connect to MongoDB (paste your real URI here)
-mongoose.connect('mongodb+srv://tzheng846:p8a4q9UA6aIGQcBm@buget-calculator.lrbzwby.mongodb.net/?retryWrites=true&w=majority&appName=buget-calculator')
-  .then(() => console.log('✅ Connected to MongoDB'))
-  .catch((err) => console.error('❌ MongoDB connection error:', err));
-
-// ✅ Define Expense schema & model
-const expenseSchema = new mongoose.Schema({
-    description: String,
-    amount: Number,
-    category: String,
-    userId: String, // <-- add this
-  });
-
-const Expense = mongoose.model('Expense', expenseSchema);
-
-// ✅ Middleware
+// Basic middleware
 app.use(cors());
 app.use(express.json());
 
-// ✅ API Routes
+// MongoDB connection options
+const mongooseOptions = {
+  serverSelectionTimeoutMS: 5000, // Timeout after 5s
+  socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
+};
 
-// Get all expenses
-app.get('/expenses', checkJwt, async (req, res) => {
-    const userId = req.auth.sub;
-    const expenses = await Expense.find({ userId });
-    res.json(expenses);
+// Connect to MongoDB
+mongoose.connect('mongodb+srv://tzheng846:p8a4q9UA6aIGQcBm@budget-calculator.lrbzwby.mongodb.net/?retryWrites=true&w=majority&appName=budget-calculator', mongooseOptions)
+  .then(() => {
+    console.log('✅ Connected to MongoDB');
+    // Start the server only after MongoDB is connected
+    app.listen(PORT, () => {
+      console.log(`Server running on http://localhost:${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error('❌ MongoDB connection error:', err);
+    console.log('\nTo fix this error:');
+    console.log('1. Go to MongoDB Atlas (https://cloud.mongodb.com)');
+    console.log('2. Click on "Network Access" in the left sidebar');
+    console.log('3. Click "Add IP Address"');
+    console.log('4. Click "Allow Access from Anywhere" (or add your specific IP)');
+    console.log('5. Click "Confirm"');
+    process.exit(1);
   });
-  
-  
-  app.post('/expenses', checkJwt, async (req, res) => {
+
+// Define Expense schema
+const expenseSchema = new mongoose.Schema({
+  description: { type: String, required: true },
+  amount: { type: Number, required: true },
+  category: { type: String, required: true },
+  userId: { type: String, required: true }, // Add userId field
+}, { timestamps: true });
+
+const Expense = mongoose.model('Expense', expenseSchema);
+
+// Protected routes
+app.get('/expenses', jwtCheck, async (req, res) => {
+  try {
+    console.log('GET /expenses - Fetching expenses...');
+    const expenses = await Expense.find({ userId: req.auth.payload.sub }).sort({ createdAt: -1 });
+    console.log('GET /expenses - Found expenses:', expenses);
+    res.json(expenses);
+  } catch (error) {
+    console.error('GET /expenses - Error:', error);
+    res.status(500).json({ error: 'Failed to fetch expenses', details: error.message });
+  }
+});
+
+app.post('/expenses', jwtCheck, async (req, res) => {
+  try {
+    console.log('POST /expenses - Received data:', req.body);
+    
     const { description, amount, category } = req.body;
-    const userId = req.auth.sub; // 🔐 Auth0 user ID from the token
-  
+    
+    if (!description || !amount || !category) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
     const expense = new Expense({
       description,
-      amount,
+      amount: Number(amount),
       category,
-      userId,
+      userId: req.auth.payload.sub // Add userId from the JWT
     });
-  
-    await expense.save();
-    res.status(201).json(expense);
-  });
-  
 
-// ✅ Start the server
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+    const savedExpense = await expense.save();
+    console.log('POST /expenses - Saved expense:', savedExpense);
+    
+    res.status(201).json(savedExpense);
+  } catch (error) {
+    console.error('POST /expenses - Error:', error);
+    res.status(500).json({ error: 'Failed to create expense', details: error.message });
+  }
 });
