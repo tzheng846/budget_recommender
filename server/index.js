@@ -2,60 +2,52 @@ import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import { auth } from 'express-oauth2-jwt-bearer';
-import path from 'path'; // New Addition
-import { fileURLToPath } from 'url'; // New Addition
+import dotenv from 'dotenv';
 
+// Load environment variables
+dotenv.config({ path: '../.env' });
 
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
-// Auth0 configuration
+// CORS configuration
+const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:5173'];
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
+
+// Basic middleware
+app.use(express.json());
+
+// Auth0 JWT check middleware
 const jwtCheck = auth({
-  audience: 'http://localhost:3001',
-  issuerBaseURL: 'https://dev-m2w3ulj0iwxdhbtx.us.auth0.com/',
+  audience: 'http://localhost:3001',  // Must match exactly with frontend
+  issuerBaseURL: 'https://dev-m2w3ulj0iwxdhbtx.us.auth0.com',
   tokenSigningAlg: 'RS256'
 });
 
-// Basic middleware
-app.use(cors());
-app.use(express.json());
-
-// Set __dirname for ES modules (New Additions)
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Serve static files from the browser folder (sibling of server)
-app.use(express.static(path.join(__dirname, '../browser')));
-
+// API Health check
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok' });
+});
 
 // MongoDB connection options
 const mongooseOptions = {
-  serverSelectionTimeoutMS: 5000, // Timeout after 5s
-  socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
+  serverSelectionTimeoutMS: 5000,
+  socketTimeoutMS: 45000,
 };
-
-// Protected route for profile page (// New Additions)
-app.get('/profile', jwtCheck, (req, res) => {
-  res.sendFile(path.join(__dirname, '../browser', 'profile.html'));
-});
 
 // Connect to MongoDB
 mongoose.connect('mongodb+srv://tzheng846:p8a4q9UA6aIGQcBm@budget-calculator.lrbzwby.mongodb.net/?retryWrites=true&w=majority&appName=budget-calculator', mongooseOptions)
   .then(() => {
     console.log('✅ Connected to MongoDB');
-    // Start the server only after MongoDB is connected
     app.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`);
+      console.log(`API Server running on http://localhost:${PORT}`);
     });
   })
   .catch((err) => {
     console.error('❌ MongoDB connection error:', err);
-    console.log('\nTo fix this error:');
-    console.log('1. Go to MongoDB Atlas (https://cloud.mongodb.com)');
-    console.log('2. Click on "Network Access" in the left sidebar');
-    console.log('3. Click "Add IP Address"');
-    console.log('4. Click "Allow Access from Anywhere" (or add your specific IP)');
-    console.log('5. Click "Confirm"');
     process.exit(1);
   });
 
@@ -64,28 +56,24 @@ const expenseSchema = new mongoose.Schema({
   description: { type: String, required: true },
   amount: { type: Number, required: true },
   category: { type: String, required: true },
-  userId: { type: String, required: true }, // Add userId field
+  userId: { type: String, required: true },
 }, { timestamps: true });
 
 const Expense = mongoose.model('Expense', expenseSchema);
 
-// Protected routes
-app.get('/expenses', jwtCheck, async (req, res) => {
+// Protected API routes
+app.get('/api/expenses', jwtCheck, async (req, res) => {
   try {
-    console.log('GET /expenses - Fetching expenses...');
     const expenses = await Expense.find({ userId: req.auth.payload.sub }).sort({ createdAt: -1 });
-    console.log('GET /expenses - Found expenses:', expenses);
     res.json(expenses);
   } catch (error) {
-    console.error('GET /expenses - Error:', error);
-    res.status(500).json({ error: 'Failed to fetch expenses', details: error.message });
+    console.error('GET /api/expenses - Error:', error);
+    res.status(500).json({ error: 'Failed to fetch expenses' });
   }
 });
 
-app.post('/expenses', jwtCheck, async (req, res) => {
+app.post('/api/expenses', jwtCheck, async (req, res) => {
   try {
-    console.log('POST /expenses - Received data:', req.body);
-    
     const { description, amount, category } = req.body;
     
     if (!description || !amount || !category) {
@@ -96,15 +84,13 @@ app.post('/expenses', jwtCheck, async (req, res) => {
       description,
       amount: Number(amount),
       category,
-      userId: req.auth.payload.sub // Add userId from the JWT
+      userId: req.auth.payload.sub
     });
 
     const savedExpense = await expense.save();
-    console.log('POST /expenses - Saved expense:', savedExpense);
-    
     res.status(201).json(savedExpense);
   } catch (error) {
-    console.error('POST /expenses - Error:', error);
-    res.status(500).json({ error: 'Failed to create expense', details: error.message });
+    console.error('POST /api/expenses - Error:', error);
+    res.status(500).json({ error: 'Failed to create expense' });
   }
 });

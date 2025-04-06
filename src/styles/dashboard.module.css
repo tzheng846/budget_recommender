@@ -1,0 +1,182 @@
+.dashboard {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding: 20px;
+}
+
+.header {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.header h1 {
+  margin: 0;
+  color: #333;
+  font-size: 24px;
+}
+
+.nav ul {
+  display: flex;
+  gap: 20px;
+  list-style: none;
+  padding: 0;
+  margin: 20px 0 0 0;
+}
+
+.nav a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+}
+
+.nav a:hover {
+  color: #007bff;
+}
+
+.main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.expenseForm {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.expenseForm h2 {
+  margin: 0 0 20px 0;
+  color: #333;
+}
+
+.formGroup {
+  margin-bottom: 15px;
+}
+
+.formGroup input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.formGroup input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.submitButton {
+  width: 100%;
+  padding: 12px;
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.submitButton:hover {
+  background: #0056b3;
+}
+
+.error {
+  color: #dc3545;
+  margin-bottom: 15px;
+  padding: 10px;
+  background: #f8d7da;
+  border-radius: 4px;
+}
+
+.expenseSummary {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.expenseSummary h2 {
+  margin: 0 0 20px 0;
+  color: #333;
+}
+
+.total {
+  text-align: center;
+}
+
+.total h3 {
+  margin: 0;
+  color: #666;
+  font-size: 18px;
+}
+
+.total p {
+  margin: 10px 0 0 0;
+  font-size: 32px;
+  font-weight: bold;
+  color: #007bff;
+}
+
+.expenseList {
+  grid-column: 1 / -1;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.expenseList h2 {
+  margin: 0 0 20px 0;
+  color: #333;
+}
+
+.expenseList ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.expenseItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.expenseItem:last-child {
+  border-bottom: none;
+}
+
+.expenseInfo h3 {
+  margin: 0;
+  color: #333;
+  font-size: 16px;
+}
+
+.category {
+  margin: 5px 0 0 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.expenseAmount {
+  font-weight: bold;
+  color: #007bff;
+}
+
+@media (max-width: 768px) {
+  .main {
+    grid-template-columns: 1fr;
+  }
+  
+  .nav ul {
+    flex-direction: column;
+  }
+} 

@@ -1,0 +1,179 @@
+.wrapper {
+  width: 100%;
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+.nav {
+  width: 100%;
+  padding: 20px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navLogo {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+}
+
+.navMenu {
+  display: flex;
+  gap: 20px;
+}
+
+.navMenu ul {
+  display: flex;
+  gap: 40px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navMenu a {
+  text-decoration: none;
+  color: #666;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.navMenu a:hover {
+  color: #007bff;
+}
+
+.navMenu a.active {
+  color: #007bff;
+}
+
+.navButton {
+  display: flex;
+  gap: 16px;
+}
+
+.btn {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  background: #007bff;
+  color: #fff;
+}
+
+.btn:hover {
+  background: #0056b3;
+}
+
+.whiteBtn {
+  background: #fff;
+  color: #007bff;
+  border: 2px solid #007bff;
+}
+
+.whiteBtn:hover {
+  background: #f8f9fa;
+}
+
+.formBox {
+  max-width: 500px;
+  margin: 80px auto;
+  padding: 40px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.loginContainer {
+  text-align: center;
+}
+
+.top {
+  margin-bottom: 32px;
+}
+
+.top span {
+  font-size: 16px;
+  color: #666;
+}
+
+.top header {
+  font-size: 32px;
+  font-weight: bold;
+  color: #333;
+  margin-top: 8px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.content p {
+  color: #666;
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.submit {
+  width: 100%;
+  padding: 14px;
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 18px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.submit:hover {
+  background: #0056b3;
+}
+
+.twoCol {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #eee;
+}
+
+.signupBtn {
+  background: #f8f9fa;
+  color: #007bff;
+  border: 2px solid #007bff;
+  padding: 12px 32px;
+}
+
+.signupBtn:hover {
+  background: #e9ecef;
+}
+
+@media (max-width: 768px) {
+  .nav {
+    padding: 20px;
+  }
+
+  .navMenu {
+    display: none;
+  }
+
+  .formBox {
+    margin: 40px 20px;
+    padding: 30px 20px;
+  }
+
+  .top header {
+    font-size: 28px;
+  }
+} 

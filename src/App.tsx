@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
+import './App.css';
 
 // Type for each expense item
 type Expense = {
@@ -27,7 +28,7 @@ function App() {
 
       try {
         const token = await getAccessTokenSilently();
-        const res = await fetch('http://localhost:3001/expenses', {
+        const res = await fetch('http://localhost:3001/api/expenses', {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -64,7 +65,7 @@ function App() {
       };
 
       // Send POST request to the backend
-      const res = await fetch('http://localhost:3001/expenses', {
+      const res = await fetch('http://localhost:3001/api/expenses', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -93,55 +94,99 @@ function App() {
   const total = expenses.reduce((sum, e) => sum + e.amount, 0);
 
   return (
-    <div style={{ maxWidth: '600px', margin: '0 auto', padding: '1rem' }}>
-      {error && <div style={{ color: 'red', margin: '1rem 0' }}>{error}</div>}
+    <div className="wrapper">
+      <nav className="nav">
+        <div className="nav-logo">
+          <p>ShopSense.</p>
+        </div>
+        <div className="nav-menu" id="navMenu">
+          <ul>
+            {isAuthenticated ? (
+              <>
+                <li><a href="#" className="link">Dashboard</a></li>
+                <li><a href="#" className="link">Profile</a></li>
+                <li><a href="#" className="link">Settings</a></li>
+              </>
+            ) : (
+              <>
+                <li><a href="#" className="link active">Home</a></li>
+                <li><a href="#" className="link">About</a></li>
+              </>
+            )}
+          </ul>
+        </div>
+        <div className="nav-button">
+          {isAuthenticated ? (
+            <button className="btn white-btn" onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}>
+              Log Out
+            </button>
+          ) : (
+            <button className="btn white-btn" onClick={() => loginWithRedirect()}>
+              Sign In
+            </button>
+          )}
+        </div>
+      </nav>
 
-      {/* Login/Logout UI */}
+      {error && <div className="error-message">{error}</div>}
+
       {isAuthenticated ? (
-        <div>
-          <p>Welcome, {user?.name}!</p>
-          <button onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}>
-            Log Out
-          </button>
+        <div className="dashboard-container">
+          <h1>Welcome, {user?.name}!</h1>
+          
+          <div className="expense-form">
+            <h2>Add New Expense</h2>
+            <form onSubmit={handleSubmit}>
+              <div className="input-box">
+                <input
+                  className="input-field"
+                  placeholder="Description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+              </div>
+              <div className="input-box">
+                <input
+                  className="input-field"
+                  placeholder="Amount"
+                  type="number"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                />
+              </div>
+              <div className="input-box">
+                <input
+                  className="input-field"
+                  placeholder="Category"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                />
+              </div>
+              <button type="submit" className="submit">Add Expense</button>
+            </form>
+          </div>
+
+          <div className="expenses-list">
+            <h2>Total Spent: ${total.toFixed(2)}</h2>
+            <ul>
+              {expenses.map((exp) => (
+                <li key={exp._id} className="expense-item">
+                  <span className="expense-description">{exp.description}</span>
+                  <span className="expense-amount">${exp.amount}</span>
+                  <span className="expense-category">{exp.category}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       ) : (
-        <button onClick={() => loginWithRedirect()}>Log In</button>
-      )}
-
-      <h1>Budget Tracker</h1>
-
-      {isAuthenticated && (
-        <>
-          <form onSubmit={handleSubmit}>
-            <input
-              placeholder="Description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-            <input
-              placeholder="Amount"
-              type="number"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-            />
-            <input
-              placeholder="Category"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-            />
-            <button type="submit">Add Expense</button>
-          </form>
-
-          <h2>Total Spent: ${total.toFixed(2)}</h2>
-
-          <ul>
-            {expenses.map((exp) => (
-              <li key={exp._id}>
-                {exp.description} - ${exp.amount} ({exp.category})
-              </li>
-            ))}
-          </ul>
-        </>
+        <div className="welcome-container">
+          <h1>Welcome to ShopSense</h1>
+          <p>Track your expenses and manage your budget effectively.</p>
+          <button className="btn white-btn" onClick={() => loginWithRedirect()}>
+            Get Started
+          </button>
+        </div>
       )}
     </div>
   );
