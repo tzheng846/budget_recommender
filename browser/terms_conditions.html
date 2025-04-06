@@ -1,91 +1,237 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="terms_conditions.css"> <!-- Link to your CSS file -->
-    <title>Terms & Conditions</title>
-</head>
-  
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>Terms & Conditions</title>
   <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      font-size: 16px;
-      color: black; 
-      line-height: 1.6;
+    * {
       margin: 0;
-      padding: 20px;
-      background-color: #fffee0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
     }
+
+    body {
+      font-size: 16px;
+      color: black;
+      background-image: url(../images/cart.jpg);
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-position: center;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.85);
+      z-index: -1;
+    }
+
+    .nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      height: 100px;
+      backdrop-filter: blur(15px);
+      background: rgba(255, 255, 255, 0.1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      line-height: 100px;
+      z-index: 1000;
+    }
+
+    .nav-logo p {
+      color: #fff;
+      font-size: 25px;
+      font-weight: 600;
+    }
+
+    .nav-menu ul {
+      display: flex;
+      list-style: none;
+    }
+
+    .nav-menu ul li a {
+      text-decoration: none;
+      font-weight: 500;
+      color: #fff;
+      padding-bottom: 15px;
+      margin: 0 25px;
+    }
+
+    .nav-menu ul li a:hover,
+    .nav-menu ul li .active {
+      border-bottom: 2px solid #fff;
+    }
+
+    .nav-menu-btn {
+      display: none;
+    }
+
+    .nav-menu-btn i {
+      font-size: 25px;
+      color: #fff;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: .3s;
+    }
+
+    .nav-menu-btn i:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
     header, footer {
       text-align: center;
-      padding: 10px 0;
+      padding: 10px 20px;
     }
+
+    header {
+      margin-top: 90px;
+    }
+
     main {
       max-width: 800px;
       margin: 0 auto;
+      padding: 20px;
     }
+
     section {
       margin-bottom: 20px;
     }
-    h2 {
+
+    h1, h2 {
       color: #444;
+    }
+
+    h2 {
       border-bottom: 1px solid #ccc;
       padding-bottom: 5px;
     }
+
     a {
       color: #0066cc;
     }
+
+    @media only screen and (max-width: 786px) {
+      .nav-menu {
+        position: absolute;
+        top: -800px;
+        left: 0;
+        width: 100%;
+        height: 90vh;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(20px);
+        justify-content: center;
+        transition: .3s;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .nav-menu.responsive {
+        top: 100px;
+      }
+
+      .nav-menu ul {
+        flex-direction: column;
+        text-align: center;
+        padding: 0;
+      }
+
+      .nav-menu-btn {
+        display: block;
+      }
+    }
   </style>
-  
 </head>
 <body>
+  <!-- Navigation Bar -->
+  <nav class="nav">
+    <div class="nav-logo">
+      <p>ShopSense.</p>
+    </div>
+    <div class="nav-menu" id="navMenu">
+      <ul>
+        <li><a href="#" class="link active">Account</a></li>
+        <li><a href="#" class="link">Home</a></li>
+        <li><a href="#" class="link">About</a></li>
+        <li><a href="#" class="link">Explore</a></li>
+      </ul>
+    </div>
+    <div class="nav-menu-btn">
+      <i class='bx bx-menu' onclick="myMenuFunction()"></i>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
   <header>
     <h1>Terms & Conditions</h1>
     <p>Effective Date: April 06, 2025</p>
   </header>
-  
+
   <main>
     <section id="introduction">
       <h2>Introduction</h2>
       <p>Welcome to ShopSense. By accessing and using our website, you agree to comply with and be bound by these Terms and Conditions. Please review them carefully.</p>
     </section>
-    
+
     <section id="use-of-website">
       <h2>Use of Website</h2>
       <p>You agree to use ShopSense for lawful purposes only. Any misuse of our website or services may result in the termination of your access.</p>
     </section>
-    
+
     <section id="financial-disclaimer">
       <h2>Disclaimer of Financial Liability</h2>
       <p>The information provided on ShopSense is for general informational purposes only and is not intended as financial advice. All financial decisions made based on the content provided on this website are solely your responsibility. Under no circumstances shall ShopSense or its affiliates be liable for any direct, indirect, incidental, special, consequential, or punitive damages arising out of or in connection with the use or inability to use the information provided.</p>
     </section>
-    
+
     <section id="limitation-of-liability">
       <h2>Limitation of Liability</h2>
       <p>In no event shall ShopSense, its officers, directors, employees, or agents be liable for any loss or damage, including without limitation, indirect or consequential loss or damage, or any loss or damage whatsoever arising from loss of data or profits arising out of or in connection with your use of this website.</p>
     </section>
-    
+
     <section id="intellectual-property">
       <h2>Intellectual Property</h2>
       <p>All content included on this website, such as text, graphics, logos, images, and the design and structure of the website, is the property of ShopSense or its licensors and is protected by intellectual property laws.</p>
     </section>
-    
+
     <section id="governing-law">
       <h2>Governing Law</h2>
-      <p>These Terms and Conditions shall be governed by and construed in accordance with the laws of San Diego, California, United States. By using this website, you consent to the exclusive jurisdiction and venue of the courts in [Your Location] in all disputes arising out of or relating to these Terms and Conditions or the use of the website.</p>
+      <p>These Terms and Conditions shall be governed by and construed in accordance with the laws of San Diego, California, United States. By using this website, you consent to the exclusive jurisdiction and venue of the courts in San Diego, California, in all disputes arising out of or relating to these Terms and Conditions or the use of the website.</p>
     </section>
-    
+
     <section id="changes-to-terms">
       <h2>Changes to Terms</h2>
       <p>ShopSense reserves the right to modify or update these Terms and Conditions at any time. Any changes will be effective immediately upon posting on this page. It is your responsibility to review these Terms periodically for any updates.</p>
     </section>
   </main>
-  
+
   <footer>
     <p>&copy; 2025 ShopSense. All rights reserved.</p>
   </footer>
+
+  <script>
+    function myMenuFunction() {
+      var nav = document.getElementById("navMenu");
+      if (nav.className === "nav-menu") {
+        nav.className += " responsive";
+      } else {
+        nav.className = "nav-menu";
+      }
+    }
+  </script>
 </body>
 </html>
